@@ -117,7 +117,7 @@ create_parser.add_argument(
     "name", type=str, help="Name of the virtual machine")
 create_parser.add_argument(
     "size", type=int, help="Size of the virtual machine disk in GB")
-create_parser.add_argument("iso_path", type=int, help="Path to the ISO file")
+create_parser.add_argument("iso_path", type=str, help="Path to the ISO file")
 create_parser.set_defaults(func=create_vm_from_iso)
 
 create_parser = subparsers.add_parser(
