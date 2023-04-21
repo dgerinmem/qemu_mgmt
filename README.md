@@ -54,7 +54,7 @@ and connect through ssh.
 ssh {USER}@localhost -p 9134
 ```
 
-### start the vm with an additional disk
+## start the vm with an additional disk
 
 as example, to create a new disk of 32 GB
 ```bash
