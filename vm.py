@@ -75,7 +75,7 @@ def create_vm(name, size, dist):
         print("Distribution not supported")
 
 
-def start_vm(img_path, ssh_port, mem_size, daemonize):
+def start_vm(img_path, ssh_port, mem_size, daemonize, disk, dump_cmd):
     # TODO it works, but we should use another port than sh_port for vnc
     # get_available_port() does not work as expected, it never sees vnc port open
     # port = get_available_port()
@@ -83,7 +83,6 @@ def start_vm(img_path, ssh_port, mem_size, daemonize):
     port = ssh_port + 1
     nproc = int(os.cpu_count()/2)
 
-    print("port", port)
     cmd = f"qemu-system-x86_64 -vnc 127.0.0.1:{port} \
                                 -smp {nproc} \
                                 -device virtio-net,netdev=user.0 \
@@ -94,6 +93,15 @@ def start_vm(img_path, ssh_port, mem_size, daemonize):
 
     if daemonize:
         cmd = cmd + " --daemonize"
+
+    print(disk)
+    if disk != None:
+        cmd = cmd + \
+            " -drive file={},if=virtio,index=1,cache=writeback,discard=ignore,format=qcow2".format(
+                disk)
+
+    if dump_cmd:
+        print(cmd)
 
     if subprocess.call(cmd, shell=True) == 0:
         print("vm started wih ssh port", ssh_port, "on localhost",
@@ -138,8 +146,12 @@ start_parser.add_argument("--ssh_port", type=int,
                           default=2222, help="SSH port for the virtual machine")
 start_parser.add_argument("--mem_size", type=int, default=16000,
                           help="Memory size for the virtual machine in MB")
+start_parser.add_argument("--disk", type=str, default=None,
+                          help="Attach an additional disk to the virtual machine",)
 start_parser.add_argument(
     "-d", "--daemonize", action="store_true", help="daemonize virtual machine")
+start_parser.add_argument(
+    "--dump_cmds", action="store_true", help="dump qemu commands")
 start_parser.set_defaults(func=start_vm)
 
 args = parser.parse_args()
@@ -150,7 +162,8 @@ if hasattr(args, "func"):
     if args.func == create_vm:
         create_vm(args.name, args.size, args.distrib)
     if args.func == start_vm:
-        start_vm(args.img_path, args.ssh_port, args.mem_size, args.daemonize)
+        start_vm(args.img_path, args.ssh_port, args.mem_size,
+                 args.daemonize, args.disk, args.dump_cmds)
 
 else:
     parser.print_help()
