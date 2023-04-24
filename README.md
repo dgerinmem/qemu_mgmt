@@ -67,10 +67,20 @@ start the machine with the new disk attached
 ./vm.py start upmem-vm-debian10.13.qcow  --daemonize --ssh_port 9134 --disk mydisk.qcow2
 ssh {USER}@localhost -p 9134
 ```
-
-Normally, the new dish is visible in /dev/vdb,
-you can mount it manually :
+Normally, the new disk is visible in /dev/vdb,
+you can check that your disk is visible with 
 ```bash
+fdisk -l
+```
+
+the first time, you need to create create a new partition on the new disk (eg ext4)
+```bash
+sudo mkfs -t ext4 /dev/vdb
+```
+
+then, you can mount it manually on specific directory (eg : /home/data) :
+```bash
+mkdir /home/data
 sudo mount /dev/vdb /home/data
 ```
 
