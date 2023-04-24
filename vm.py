@@ -75,7 +75,7 @@ def create_vm(name, size, dist):
         print("Distribution not supported")
 
 
-def start_vm(img_path, ssh_port, mem_size, daemonize, disk, dump_cmd, qemu_extra_args, ncpus ,sudo):
+def start_vm(img_path, ssh_port, mem_size, daemonize, disk, dump_cmd, qemu_extra_args, ncpus, sudo):
     # TODO it works, but we should use another port than sh_port for vnc
     # get_available_port() does not work as expected, it never sees vnc port open
     # port = get_available_port()
@@ -109,7 +109,7 @@ def start_vm(img_path, ssh_port, mem_size, daemonize, disk, dump_cmd, qemu_extra
 
     if dump_cmd:
         cmd_ = cmd.replace('\n', '')
-        ## replace tabulation with space
+        # replace tabulation with space
         cmd_ = cmd_.replace('\t', '')
 
     if subprocess.call(cmd, shell=True) == 0:
