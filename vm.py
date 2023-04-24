@@ -85,43 +85,38 @@ def start_vm(img_path, ssh_port, mem_size, daemonize, disk, dump_cmd, qemu_extra
     if ncpus == None:
         ncpus = int(os.cpu_count()/2)
 
-    cmd = f"qemu-system-x86_64 -vnc 127.0.0.1:{port} \
-                                -smp {ncpus} \
-                                -device virtio-net,netdev=user.0 \
-                                -m {mem_size} \
-                                -drive file={img_path},if=virtio,index=0,cache=writeback,discard=ignore,format=qcow2 \
-                                -machine type=pc,accel=kvm \
-                                -netdev user,id=user.0,hostfwd=tcp::{ssh_port}-:22"
+    cmd = []
+    cmd.append(f"qemu-system-x86_64 -vnc 127.0.0.1:{port}")
+    cmd.append(f"-smp {ncpus}")
+    cmd.append(f"-device virtio-net,netdev=user.0")
+    cmd.append(f"-m {mem_size}")
+    cmd.append(
+        f"-drive file={img_path},if=virtio,index=0,cache=writeback,discard=ignore,format=qcow2")
+    cmd.append(f"-machine type=pc,accel=kvm")
+    cmd.append(f"-netdev user,id=user.0,hostfwd=tcp::{ssh_port}-:22")
 
     if daemonize:
-        cmd = cmd + " --daemonize"
+        cmd.append("--daemonize")
 
     if disk != None:
-        cmd = cmd + \
-            " -drive file={},if=virtio,index=1,cache=writeback,discard=ignore,format=qcow2".format(
-                disk)
+        cmd.append(
+            "-drive file={},if=virtio,index=1,cache=writeback,discard=ignore,format=qcow2".format(
+                disk))
 
     if qemu_extra_args != None:
-        cmd = cmd + ' ' + qemu_extra_args
+        cmd.append(qemu_extra_args)
 
     if sudo:
-        cmd = "sudo " + cmd
+        cmd.append("sudo")
 
     if dump_cmd:
-        cmd_ = cmd.replace('\n', '')
-        # replace tabulation with space
-        cmd_ = cmd_.replace('\t', '')
+        print(' '.join(cmd))
 
-    if subprocess.call(cmd, shell=True) == 0:
+    if subprocess.call(' '.join(cmd), shell=True) == 0:
         print("vm started wih ssh port", ssh_port, "on localhost",
               "connect with \nssh -p", ssh_port, "{USER}@localhost")
     else:
         print("vm failed to start")
-
-
-def stop_vm(name):
-    cmd = f"pkill -f {name}"
-    subprocess.call(cmd, shell=True)
 
 
 parser = argparse.ArgumentParser(
