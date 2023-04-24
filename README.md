@@ -88,3 +88,24 @@ or configure the fstab as below for a permanent mounting point :
 ```bash
 sudo echo "/dev/vdb /data ext4 rw,user,auto,exec 0 0" >>  /etc/fstab
 ```
+
+## update debian10 packages list (buster)
+
+add this to /etc/apt/sources.list
+
+```bash
+deb-src http://deb.debian.org/debian/ buster main
+
+deb http://security.debian.org/debian-security buster/updates main
+deb-src http://security.debian.org/debian-security buster/updates main
+
+# buster-updates, previously known as 'volatile'
+deb http://deb.debian.org/debian/ buster-updates main
+deb-src http://deb.debian.org/debian/ buster-updates main
+
+deb-src http://deb.debian.org/debian/ sid main contrib non-free
+```
+
+
+
+
