@@ -86,5 +86,5 @@ sudo mount /dev/vdb /data
 
 or configure the fstab as below for a permanent mounting point :
 ```bash
-sudo echo "/dev/vdb /data ext4 rw,user,auto,exec 0 0" >>  /dev/vdb
+sudo echo "/dev/vdb /data ext4 rw,user,auto,exec 0 0" >>  /etc/fstab
 ```
