@@ -107,7 +107,7 @@ def start_vm(img_path, ssh_port, mem_size, daemonize, disk, dump_cmd, qemu_extra
         cmd.append(qemu_extra_args)
 
     if sudo:
-        cmd.append("sudo")
+        cmd.insert(0, "sudo")
 
     if dump_cmd:
         print(' '.join(cmd))
