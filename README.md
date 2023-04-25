@@ -115,8 +115,9 @@ sudo visudo
 
 add thoses lines :
 
+```bash
 {USER}  ALL=(ALL) NOPASSWD:ALL
-
+```
 
 
 
