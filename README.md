@@ -89,6 +89,8 @@ or configure the fstab as below for a permanent mounting point :
 sudo echo "/dev/vdb /data ext4 rw,user,auto,exec 0 0" >>  /etc/fstab
 ```
 
+# Apendix
+
 ## update debian10 packages list (buster)
 
 add this to /etc/apt/sources.list
@@ -105,6 +107,15 @@ deb-src http://deb.debian.org/debian/ buster-updates main
 
 deb-src http://deb.debian.org/debian/ sid main contrib non-free
 ```
+## disable password for USER
+
+```bash
+sudo visudo
+```
+
+add thoses lines :
+
+{USER}  ALL=(ALL) NOPASSWD:ALL
 
 
 
