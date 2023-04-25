@@ -23,7 +23,7 @@ iso_paths = {debian: "debian-10.13.0-amd64-xfce-CD-1.iso",
              ubuntu: "ubuntu-20.04.3-live-server-amd64.iso"
              }
 
-iso_urls = {debian: "https://cdimage.debian.org/cdimage/archive/10.13.0/amd64/iso-cd/debian-10.13.0-amd64-xfce-CD-1.iso",
+iso_urls = {debian: "https://cdimage.debian.org/cdimage/archive/10.4.0-live/amd64/iso-hybrid/debian-live-10.4.0-amd64-standard.iso",
             ubuntu: "https://releases.ubuntu.com/focal/ubuntu-20.04.6-desktop-amd64.iso"
             }
 
@@ -75,7 +75,7 @@ def create_vm(name, size, dist):
         print("Distribution not supported")
 
 
-def start_vm(img_path, ssh_port, mem_size, daemonize, disk, dump_cmd, qemu_extra_args, ncpus, sudo):
+def start_vm(img_path, ssh_port, mem_size, daemonize, disk, verbose, qemu_extra_args, ncpus, sudo, graphical):
     # TODO it works, but we should use another port than sh_port for vnc
     # get_available_port() does not work as expected, it never sees vnc port open
     # port = get_available_port()
@@ -86,8 +86,11 @@ def start_vm(img_path, ssh_port, mem_size, daemonize, disk, dump_cmd, qemu_extra
         ncpus = int(os.cpu_count()/2)
 
     cmd = []
-    cmd.append(f"qemu-system-x86_64 -vnc 127.0.0.1:{port}")
+    cmd.append(f"qemu-system-x86_64")
+    if not (graphical):
+        cmd.append(f"-vnc 127.0.0.1:{port}")
     cmd.append(f"-smp {ncpus}")
+    cmd.append(f"-cpu host")
     cmd.append(f"-device virtio-net,netdev=user.0")
     cmd.append(f"-m {mem_size}")
     cmd.append(
@@ -109,7 +112,7 @@ def start_vm(img_path, ssh_port, mem_size, daemonize, disk, dump_cmd, qemu_extra
     if sudo:
         cmd.insert(0, "sudo")
 
-    if dump_cmd:
+    if verbose:
         print(' '.join(cmd))
 
     if subprocess.call(' '.join(cmd), shell=True) == 0:
@@ -156,13 +159,14 @@ start_parser.add_argument("--qemu_extra_args", type=str, default=None,
                           help="Extra arguments for qemu",)
 start_parser.add_argument("--sudo", action="store_true",
                           help="run with sudo")
+start_parser.add_argument("--graphical", action="store_true",
+                          help="run with graphical interface")
 start_parser.add_argument("--ncpus", type=int, default=None,
                           help="Number of virtual CPU")
-
 start_parser.add_argument(
     "--daemonize", action="store_true", help="daemonize virtual machine")
 start_parser.add_argument(
-    "--dump_cmds", action="store_true", help="dump qemu commands")
+    "-v", "--verbose", action="store_true", help="verbose")
 start_parser.set_defaults(func=start_vm)
 
 args = parser.parse_args()
@@ -174,7 +178,7 @@ if hasattr(args, "func"):
         create_vm(args.name, args.size, args.distrib)
     if args.func == start_vm:
         start_vm(args.img_path, args.ssh_port, args.mem_size,
-                 args.daemonize, args.disk, args.dump_cmds, args.qemu_extra_args, args.ncpus, args.sudo)
+                 args.daemonize, args.disk, args.verbose, args.qemu_extra_args, args.ncpus, args.sudo, args.graphical)
 
 else:
     parser.print_help()
