@@ -19,10 +19,10 @@ and start a new qemu vm for os installation.
 
 ### start vm (need an installed qemu image)
 ```bash
-./vm.py start upmem-vm-debian10.13.qcow  --daemonize --ssh_port 9134
+./vm.py start dg-vm-debian10.13.qcow  --daemonize --ssh_port 9134
 ```
 
-Will start a new vm from upmem-vm-debian10.13.qcow image in the background
+Will start a new vm from dg-vm-debian10.13.qcow image in the background
 and expose ssh port 9134.
 
 ## configurre a new vm (eg debian-10.13)
@@ -31,7 +31,7 @@ If no ssh server is installed on the vm (default), you should
 start the vm in graphical mode.
 
 ```bash
-  ./vm.py start upmem-vm-debian10.13.qcow --graphical
+  ./vm.py start dg-vm-debian10.13.qcow --graphical
 ```
 
 set the user as root
@@ -50,7 +50,7 @@ Then, you can restart the machine on non-graphical mode (default),
 and connect through ssh.
 
 ```bash
-./vm.py start upmem-vm-debian10.13.qcow  --daemonize --ssh_port 9134
+./vm.py start dg-vm-debian10.13.qcow  --daemonize --ssh_port 9134
 ssh {USER}@localhost -p 9134
 ```
 
@@ -64,7 +64,7 @@ qemu-img create -f qcow2 mydisk.qcow2 32G
 start the machine with the new disk attached
 
 ```bash
-./vm.py start upmem-vm-debian10.13.qcow  --daemonize --ssh_port 9134 --disk mydisk.qcow2
+./vm.py start dg-vm-debian10.13.qcow  --daemonize --ssh_port 9134 --disk mydisk.qcow2
 ssh {USER}@localhost -p 9134
 ```
 Normally, the new disk is visible in /dev/vdb,
